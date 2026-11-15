@@ -1,0 +1,6 @@
+{
+  "name": "OcenaKnurów – TOP 10",
+  "description": "Autentyczne, weryfikowane lokalizacją GPS rankingi najlepszych miejsc w Knurowie (woj. śląskie) oparte na średniej ważonej Bayesa.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

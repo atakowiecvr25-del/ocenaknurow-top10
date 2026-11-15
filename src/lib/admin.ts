@@ -33,6 +33,8 @@ export interface AdminUserEntry {
   avatarUrl: string;
   createdAt: string;
   lastSignInAt: string | null;
+  lastIp?: string;
+  lastUserAgent?: string;
   reviewsCount: number;
   placesAddedCount: number;
 }
@@ -83,6 +85,34 @@ export function formatAdminDate(iso: string | null | undefined): string {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+export function formatShortDevice(userAgent?: string | null): string {
+  if (!userAgent) return '';
+  const ua = userAgent.toLowerCase();
+  const os = ua.includes('iphone') || ua.includes('ipad')
+    ? 'iOS'
+    : ua.includes('android')
+      ? 'Android'
+      : ua.includes('windows')
+        ? 'Windows'
+        : ua.includes('mac os') || ua.includes('macintosh')
+          ? 'macOS'
+          : ua.includes('linux')
+            ? 'Linux'
+            : 'Inny system';
+  const browser = ua.includes('edg/')
+    ? 'Edge'
+    : ua.includes('opr/') || ua.includes('opera')
+      ? 'Opera'
+      : ua.includes('chrome/') || ua.includes('crios/')
+        ? 'Chrome'
+        : ua.includes('firefox/') || ua.includes('fxios/')
+          ? 'Firefox'
+          : ua.includes('safari/')
+            ? 'Safari'
+            : 'Przeglądarka';
+  return `${browser} · ${os}`;
 }
 
 /**

@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildFallbackAdminDashboard, isAdminEmail } from './admin';
+import {
+  buildFallbackAdminDashboard,
+  formatShortDevice,
+  isAdminEmail,
+} from './admin';
 import type { RankedPlace } from './ranking';
 
 test('isAdminEmail akceptuje wyłącznie adres administratora niezależnie od wielkości liter', () => {
@@ -73,4 +77,20 @@ test('buildFallbackAdminDashboard zlicza nowe opinie, konta oraz zgłoszone loka
   assert.equal(dashboard.recentReviews[0].id, 'r1');
   assert.equal(dashboard.recentReviews[1].isEdited, true);
   assert.equal(dashboard.communityPlaces[0].name, 'Gym City Knurów');
+});
+
+test('formatShortDevice rozpoznaje system i przeglądarkę z User-Agent', () => {
+  assert.equal(
+    formatShortDevice(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36'
+    ),
+    'Chrome · Windows'
+  );
+  assert.equal(
+    formatShortDevice(
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1'
+    ),
+    'Safari · iOS'
+  );
+  assert.equal(formatShortDevice(''), '');
 });

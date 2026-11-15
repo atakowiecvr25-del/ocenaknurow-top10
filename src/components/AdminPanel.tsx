@@ -15,6 +15,7 @@ import adminSqlRaw from '../../supabase/admin_setup.sql?raw';
 import {
   buildFallbackAdminDashboard,
   formatAdminDate,
+  formatShortDevice,
   type AdminDashboardData,
 } from '../lib/admin';
 import { CATEGORY_LABELS } from '../lib/ranking';
@@ -454,6 +455,13 @@ export function AdminPanel({
                         <p className="text-xs text-zinc-400 truncate">
                           {u.email || `ID: ${u.id.slice(0, 8)}...`}
                         </p>
+                        {(u.lastIp || u.lastUserAgent) && (
+                          <p className="text-xs text-zinc-500 truncate mt-0.5 tabular-nums">
+                            {u.lastIp ? `IP: ${u.lastIp}` : ''}
+                            {u.lastIp && u.lastUserAgent ? ' · ' : ''}
+                            {u.lastUserAgent ? formatShortDevice(u.lastUserAgent) : ''}
+                          </p>
+                        )}
                       </div>
                     </div>
 

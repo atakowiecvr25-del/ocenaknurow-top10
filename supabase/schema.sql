@@ -228,6 +228,20 @@ BEGIN
           coalesce(u.raw_user_meta_data->>'avatar_url', u.raw_user_meta_data->>'picture', '') AS "avatarUrl",
           u.created_at AS "createdAt",
           u.last_sign_in_at AS "lastSignInAt",
+          coalesce((
+            SELECT host(s.ip)
+            FROM auth.sessions s
+            WHERE s.user_id = u.id AND s.ip IS NOT NULL
+            ORDER BY coalesce(s.updated_at, s.created_at) DESC
+            LIMIT 1
+          ), '') AS "lastIp",
+          coalesce((
+            SELECT s.user_agent
+            FROM auth.sessions s
+            WHERE s.user_id = u.id AND s.user_agent IS NOT NULL
+            ORDER BY coalesce(s.updated_at, s.created_at) DESC
+            LIMIT 1
+          ), '') AS "lastUserAgent",
           (SELECT count(*) FROM public.reviews r WHERE r.user_id = u.id) AS "reviewsCount",
           (SELECT count(*) FROM public.places p WHERE p.created_by = u.id) AS "placesAddedCount",
           coalesce(u.last_sign_in_at, u.created_at) AS sort_ts

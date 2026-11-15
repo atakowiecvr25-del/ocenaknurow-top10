@@ -60,6 +60,10 @@ export default function App() {
   const [onlyEstablished, setOnlyEstablished] = useState<boolean>(false);
   const [showAllPlaces, setShowAllPlaces] = useState<boolean>(false);
 
+  const isSetupQuery =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('setup') === 'sql';
+
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [isAddPlaceOpen, setIsAddPlaceOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -261,6 +265,16 @@ export default function App() {
     [places, selectedPlaceId]
   );
 
+  const needsSqlMigration =
+    isSupabaseConfigured &&
+    !loading &&
+    places.length > 0 &&
+    (places.length < 125 ||
+      !places.some((p) => p.category === 'boiska') ||
+      !places.some((p) => p.name.toLowerCase().includes('axiniia')));
+
+  const showSqlTools = !isSupabaseConfigured || needsSqlMigration || isSetupQuery;
+
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col">
       <TopBar
@@ -387,21 +401,19 @@ export default function App() {
               </div>
             </div>
 
-            {isSupabaseConfigured &&
-              !loading &&
-              places.length > 0 &&
-              (places.length < 100 || !places.some((p) => p.category === 'boiska')) && (
+            {needsSqlMigration && (
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-xs text-zinc-300">
                   <p>
                     W bazie Supabase jest teraz{' '}
                     <span className="font-mono font-semibold text-amber-300">
                       {places.length}
                     </span>{' '}
-                    miejsc. Dostępna jest nowa aktualizacja katalogu (100+
-                    miejsc, w tym osobne kategorie{' '}
-                    <strong className="text-zinc-100">Siłownie</strong> oraz{' '}
-                    <strong className="text-zinc-100">Boiska / Orliki</strong>:
-                    Orlik MOSiR, Siódemka, Szóstka, Trójka, Orlik na Paderku).
+                    miejsc. Dostępna jest aktualizacja katalogu (125+ lokali:
+                    nowe salony fryzjerskie, m.in.{' '}
+                    <strong className="text-zinc-100">
+                      Salon Fryzjerski Axiniia
+                    </strong>
+                    , barberzy, restauracje, kawiarnie, cukiernie i apteki).
                   </p>
                   <button
                     type="button"
@@ -513,7 +525,7 @@ export default function App() {
 
         {activeSection === 'maps' && <MapsExplorerPanel places={places} />}
 
-        {activeSection === 'sql' && <SqlSchemaPanel />}
+        {activeSection === 'sql' && showSqlTools && <SqlSchemaPanel />}
       </main>
 
       <footer className="border-t border-[#27272a] py-6 text-xs text-zinc-500">
@@ -527,13 +539,15 @@ export default function App() {
               Strefa weryfikacji lokalnej: 10 km od centrum Knurowa (50.2225° N,
               18.6708° E)
             </span>
-            <button
-              type="button"
-              onClick={() => setActiveSection('sql')}
-              className="text-zinc-400 hover:text-emerald-400 underline underline-offset-4 transition-colors"
-            >
-              Konfiguracja bazy SQL
-            </button>
+            {showSqlTools && (
+              <button
+                type="button"
+                onClick={() => setActiveSection('sql')}
+                className="text-zinc-400 hover:text-emerald-400 underline underline-offset-4 transition-colors"
+              >
+                Konfiguracja bazy SQL
+              </button>
+            )}
           </div>
         </div>
       </footer>

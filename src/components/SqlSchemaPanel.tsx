@@ -29,7 +29,7 @@ export function SqlSchemaPanel() {
           <div className="space-y-1.5 max-w-2xl">
             <h2 className="text-xl font-bold text-zinc-100 flex items-center gap-2">
               <Database className="h-5 w-5 text-emerald-500" aria-hidden="true" />
-              <span>Baza danych Supabase (aktualizacja katalogu — ponad 100 miejsc)</span>
+              <span>Baza danych Supabase (aktualizacja katalogu — 125+ miejsc)</span>
             </h2>
             <p className="text-sm text-zinc-400 leading-relaxed">
               Skopiuj zakładkę{' '}
@@ -38,10 +38,10 @@ export function SqlSchemaPanel() {
               </strong>{' '}
               i wklej ją w Supabase →{' '}
               <span className="font-mono text-zinc-200">SQL Editor</span> →{' '}
-              <span className="font-mono text-zinc-200">Run</span>. Przeniesie
-              siłownie i doda boiska oraz Orliki (Orlik MOSiR, Siódemka, Szóstka,
-              Trójka, Orlik na Paderku, Stadion Miejski) — bez usuwania
-              istniejących opinii.
+              <span className="font-mono text-zinc-200">Run</span>. Doda brakujące
+              salony fryzjerskie (m.in. Salon Fryzjerski Axiniia, Sońka, Gabriela,
+              Stylove Włosy), barberów, restauracje, kawiarnie, cukiernie oraz
+              apteki — bez usuwania istniejących opinii.
             </p>
           </div>
 
@@ -88,7 +88,7 @@ export function SqlSchemaPanel() {
                 : 'text-zinc-400 hover:text-zinc-100'
             }`}
           >
-            Aktualizacja istniejącej bazy (100+ lokali)
+            Aktualizacja istniejącej bazy (125+ lokali)
           </button>
           <button
             type="button"

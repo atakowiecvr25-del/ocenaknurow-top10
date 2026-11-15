@@ -1,15 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, Copy, Database } from 'lucide-react';
+import adminSqlRaw from '../../supabase/admin_setup.sql?raw';
 import migrationSqlRaw from '../../supabase/migration_categories.sql?raw';
 import schemaSqlRaw from '../../supabase/schema.sql?raw';
 
-type SchemaTab = 'migration' | 'full';
+export type SchemaTab = 'migration' | 'admin' | 'full';
 
-export function SqlSchemaPanel() {
-  const [activeTab, setActiveTab] = useState<SchemaTab>('migration');
+interface SqlSchemaPanelProps {
+  initialTab?: SchemaTab;
+}
+
+export function SqlSchemaPanel({ initialTab = 'migration' }: SqlSchemaPanelProps) {
+  const [activeTab, setActiveTab] = useState<SchemaTab>(initialTab);
   const [copied, setCopied] = useState(false);
 
-  const displayedSql = activeTab === 'migration' ? migrationSqlRaw : schemaSqlRaw;
+  useEffect(() => {
+    setActiveTab(initialTab);
+    setCopied(false);
+  }, [initialTab]);
+
+  const displayedSql =
+    activeTab === 'migration'
+      ? migrationSqlRaw
+      : activeTab === 'admin'
+        ? adminSqlRaw
+        : schemaSqlRaw;
 
   async function handleCopy() {
     if (!displayedSql) return;
@@ -32,17 +47,11 @@ export function SqlSchemaPanel() {
               <span>Baza danych Supabase (aktualizacja katalogu — 125+ miejsc)</span>
             </h2>
             <p className="text-sm text-zinc-400 leading-relaxed">
-              Skopiuj zakładkę{' '}
-              <strong className="text-zinc-200 font-medium">
-                Aktualizacja (migracja)
-              </strong>{' '}
-              i wklej ją w Supabase →{' '}
+              Skopiuj wybrany skrypt i wklej go w Supabase →{' '}
               <span className="font-mono text-zinc-200">SQL Editor</span> →{' '}
-              <span className="font-mono text-zinc-200">Run</span>. Utworzy
-              osobne kategorie TOP 10 (Restauracje i Bistra, Kawiarnie i
-              Cukiernie, Markety i Sklepy) oraz doda brakujące salony
-              fryzjerskie (m.in. Axiniia), barberów i lokale — bez usuwania
-              istniejących opinii.
+              <span className="font-mono text-zinc-200">Run</span>. Możesz
+              zaktualizować katalog kategorii, włączyć Panel Admina (lista kont i
+              moderacja) albo postawić schemat od zera.
             </p>
           </div>
 
@@ -63,7 +72,9 @@ export function SqlSchemaPanel() {
                 <span>
                   {activeTab === 'migration'
                     ? 'Kopiuj kod aktualizacji'
-                    : 'Kopiuj pełny schemat'}
+                    : activeTab === 'admin'
+                      ? 'Kopiuj SQL Panelu Admina'
+                      : 'Kopiuj pełny schemat'}
                 </span>
               </>
             )}
@@ -73,7 +84,7 @@ export function SqlSchemaPanel() {
         <div
           role="tablist"
           aria-label="Wybór skryptu SQL"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-[#27272a] bg-[#09090b] p-1"
+          className="inline-flex flex-wrap items-center gap-1.5 rounded-lg border border-[#27272a] bg-[#09090b] p-1"
         >
           <button
             type="button"
@@ -90,6 +101,22 @@ export function SqlSchemaPanel() {
             }`}
           >
             Aktualizacja istniejącej bazy (125+ lokali)
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'admin'}
+            onClick={() => {
+              setActiveTab('admin');
+              setCopied(false);
+            }}
+            className={`rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors ${
+              activeTab === 'admin'
+                ? 'bg-zinc-800 text-white'
+                : 'text-zinc-400 hover:text-zinc-100'
+            }`}
+          >
+            Panel Admina (konta i moderacja)
           </button>
           <button
             type="button"

@@ -36,6 +36,6 @@ export interface GpsState {
   errorMessage: string | null;
 }
 
-export type ActiveNavSection = 'ranking' | 'gps' | 'maps' | 'sql';
+export type ActiveNavSection = 'ranking' | 'gps' | 'maps' | 'sql' | 'admin';
 
 export type { PlaceCategory, RankedPlace, Review };

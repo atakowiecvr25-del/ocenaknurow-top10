@@ -263,3 +263,69 @@ export async function insertSupabasePlace(input: {
 
   return fetchSupabaseSnapshot(input.userId);
 }
+
+export async function fetchSupabaseAdminDashboard(
+  fallbackPlaces: RankedPlace[]
+): Promise<{
+  data: import('./admin').AdminDashboardData;
+  rpcReady: boolean;
+  error?: string;
+}> {
+  const { buildFallbackAdminDashboard } = await import('./admin');
+  if (!supabase) {
+    return {
+      data: buildFallbackAdminDashboard(fallbackPlaces),
+      rpcReady: false,
+      error: 'Brak połączenia z Supabase (tryb lokalny).',
+    };
+  }
+
+  const { data, error } = await supabase.rpc('get_admin_dashboard');
+  if (error || !data) {
+    return {
+      data: buildFallbackAdminDashboard(fallbackPlaces),
+      rpcReady: false,
+      error: error?.message || 'Funkcja get_admin_dashboard nie została jeszcze utworzona w Supabase.',
+    };
+  }
+
+  const payload = data as import('./admin').AdminDashboardData;
+  return {
+    data: {
+      stats: payload.stats,
+      users: Array.isArray(payload.users) ? payload.users : [],
+      recentReviews: Array.isArray(payload.recentReviews) ? payload.recentReviews : [],
+      communityPlaces: Array.isArray(payload.communityPlaces) ? payload.communityPlaces : [],
+    },
+    rpcReady: true,
+  };
+}
+
+export async function adminDeleteSupabaseReview(
+  reviewId: string,
+  currentUserId: string
+) {
+  if (!supabase) {
+    throw new Error('Brak konfiguracji Supabase.');
+  }
+  const { error } = await supabase.from('reviews').delete().eq('id', reviewId);
+  if (error) {
+    throw new Error(`Nie udało się usunąć opinii: ${error.message}`);
+  }
+  return fetchSupabaseSnapshot(currentUserId);
+}
+
+export async function adminDeleteSupabasePlace(
+  placeId: string,
+  currentUserId: string
+) {
+  if (!supabase) {
+    throw new Error('Brak konfiguracji Supabase.');
+  }
+  const { error } = await supabase.from('places').delete().eq('id', placeId);
+  if (error) {
+    throw new Error(`Nie udało się usunąć lokalu: ${error.message}`);
+  }
+  return fetchSupabaseSnapshot(currentUserId);
+}
+

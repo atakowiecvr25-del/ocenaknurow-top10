@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Plus, Search, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { isAdminEmail } from './lib/admin';
 import { verifyKnurowLocation } from './lib/geo';
 import {
   BAYES_MINIMUM_VOTES_M,
@@ -21,12 +22,13 @@ import type {
   RateLimitStatus,
 } from './types';
 import { AddPlaceModal } from './components/AddPlaceModal';
+import { AdminPanel } from './components/AdminPanel';
 import { GoogleAuthModal } from './components/GoogleAuthModal';
 import { GpsStatusPanel } from './components/GpsStatusPanel';
 import { MapsExplorerPanel } from './components/MapsExplorerPanel';
 import { PlaceCard } from './components/PlaceCard';
 import { PlaceDetailModal } from './components/PlaceDetailModal';
-import { SqlSchemaPanel } from './components/SqlSchemaPanel';
+import { SqlSchemaPanel, type SchemaTab } from './components/SqlSchemaPanel';
 import { TopBar } from './components/TopBar';
 
 type CategoryFilter = 'wszystkie' | PlaceCategory;
@@ -62,6 +64,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [onlyEstablished, setOnlyEstablished] = useState<boolean>(false);
   const [showAllPlaces, setShowAllPlaces] = useState<boolean>(false);
+  const [sqlInitialTab, setSqlInitialTab] = useState<SchemaTab>('migration');
 
   const isSetupQuery =
     typeof window !== 'undefined' &&
@@ -286,14 +289,27 @@ export default function App() {
         (p) => p.name.toLowerCase().includes('pub 777') && p.category === 'pizzeria'
       ));
 
-  const showSqlTools = !isSupabaseConfigured || needsSqlMigration || isSetupQuery;
+  const isAdmin = Boolean(user && isAdminEmail(user.email));
+
+  useEffect(() => {
+    if (!isAdmin && activeSection === 'admin') {
+      setActiveSection('ranking');
+    }
+  }, [isAdmin, activeSection]);
+
+  const showSqlTools =
+    !isSupabaseConfigured || needsSqlMigration || isSetupQuery || isAdmin;
 
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col">
       <TopBar
         activeSection={activeSection}
-        onSelectSection={setActiveSection}
+        onSelectSection={(sec) => {
+          if (sec === 'sql') setSqlInitialTab('migration');
+          setActiveSection(sec);
+        }}
         user={user}
+        isAdmin={isAdmin}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onLogout={() => void handleLogout()}
       />
@@ -544,7 +560,28 @@ export default function App() {
 
         {activeSection === 'maps' && <MapsExplorerPanel places={places} />}
 
-        {activeSection === 'sql' && showSqlTools && <SqlSchemaPanel />}
+        {activeSection === 'admin' && isAdmin && user && (
+          <AdminPanel
+            user={user}
+            places={places}
+            globalMeanC={globalMeanC}
+            onSelectPlace={(id) => setSelectedPlaceId(id)}
+            onOpenSqlAdmin={() => {
+              setSqlInitialTab('admin');
+              setActiveSection('sql');
+            }}
+            onSnapshotUpdated={(payload) => {
+              setPlaces(payload.places);
+              setGlobalMeanC(payload.globalMeanC);
+              setTotalReviews(payload.totalReviews);
+              setRateLimit(payload.rateLimit);
+            }}
+          />
+        )}
+
+        {activeSection === 'sql' && showSqlTools && (
+          <SqlSchemaPanel initialTab={sqlInitialTab} />
+        )}
       </main>
 
       <footer className="border-t border-[#27272a] py-6 text-xs text-zinc-500">

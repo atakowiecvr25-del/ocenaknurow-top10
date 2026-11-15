@@ -5,6 +5,7 @@ interface TopBarProps {
   activeSection: ActiveNavSection;
   onSelectSection: (section: ActiveNavSection) => void;
   user: AuthUser | null;
+  isAdmin?: boolean;
   onOpenAuth: () => void;
   onLogout: () => void;
 }
@@ -13,6 +14,7 @@ export function TopBar({
   activeSection,
   onSelectSection,
   user,
+  isAdmin = false,
   onOpenAuth,
   onLogout,
 }: TopBarProps) {
@@ -20,6 +22,7 @@ export function TopBar({
     { id: 'ranking', label: 'Ranking' },
     { id: 'gps', label: 'Strefa GPS' },
     { id: 'maps', label: 'Szukaj w Mapach' },
+    ...(isAdmin ? [{ id: 'admin' as ActiveNavSection, label: 'Panel admina' }] : []),
   ];
 
   return (

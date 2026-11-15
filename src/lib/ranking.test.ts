@@ -15,13 +15,20 @@ import {
   type Review,
 } from './ranking';
 
-test('normalizePlaceCategory poprawnie rozdziela starszą kategorię sklepy na Żabka/Lidl/Biedronka', () => {
+test('normalizePlaceCategory poprawnie rozdziela starszą kategorię sklepy i inne na dedykowane kategorie', () => {
   assert.equal(normalizePlaceCategory('sklepy', 'Lidl Knurów – Szpitalna 37a'), 'lidl');
   assert.equal(normalizePlaceCategory('sklepy', 'Żabka – ul. 1 Maja 7'), 'zabka');
   assert.equal(normalizePlaceCategory('sklepy', 'Biedronka – Dworcowa 64'), 'biedronka');
+  assert.equal(normalizePlaceCategory('sklepy', 'Dino – ul. Niepodległości 42'), 'markety');
   assert.equal(normalizePlaceCategory('fryzjer', 'Salon Fryzjerski Lila'), 'fryzjer');
   assert.equal(normalizePlaceCategory('inne_legacy', 'Orlik MOSiR Knurów'), 'boiska');
   assert.equal(normalizePlaceCategory('inne_legacy', 'Xtreme Fitness Knurów'), 'silownie');
+  assert.equal(normalizePlaceCategory('inne_legacy', 'Bar Orientalny Quoc-Cuong'), 'restauracje');
+  assert.equal(normalizePlaceCategory('inne_legacy', 'Bistro Korzenie Śląska'), 'restauracje');
+  assert.equal(normalizePlaceCategory('inne_legacy', 'Ferlo Bake and Sweet'), 'kawiarnie');
+  assert.equal(normalizePlaceCategory('inne_legacy', 'Pracownia Coś Słodkiego'), 'kawiarnie');
+  assert.equal(normalizePlaceCategory('inne_legacy', 'Pub 777 (Pizzeria i Pub)'), 'pizzeria');
+  assert.equal(normalizePlaceCategory('inne_legacy', 'Gym City Knurów'), 'silownie');
 });
 
 test('formatPolishVotes poprawnie odmienia liczebniki polskie', () => {

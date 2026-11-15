@@ -747,7 +747,7 @@ export const SEED_PLACES: Place[] = [
     createdAt: '2026-03-15T12:00:00Z',
   },
 
-  // INNE (Markety, Fast-food, Kino, Siłownie, Basen, Urząd, Szpital)
+  // INNE (Baseny, Hala, Kino, Dom Kultury, Szpital, Urząd, Apteka, Stacje)
   {
     id: 'place-aquarelax',
     name: 'Kryta Pływalnia aQuaRelax',
@@ -781,7 +781,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-kaufland-knurow',
     name: 'Kaufland Knurów',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. 1 Maja 70, 44-190 Knurów',
     tags: ['hipermarket', 'duży parking', 'apteka'],
     lat: 50.2273,
@@ -791,7 +791,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-aldi-knurow',
     name: 'ALDI Knurów',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. 1 Maja 49, 44-190 Knurów',
     tags: ['market', 'parking', 'piekarnia'],
     lat: 50.2256,
@@ -801,7 +801,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-netto-knurow',
     name: 'Netto Knurów',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Mieszka I 6, 44-190 Knurów',
     tags: ['dyskont', 'parking', 'zakupy'],
     lat: 50.2249,
@@ -811,7 +811,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-dino-niepodleglosci',
     name: 'Dino – ul. Niepodległości 42',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Niepodległości 42, 44-190 Knurów',
     tags: ['market', 'stoisko mięsne', 'parking'],
     lat: 50.2192,
@@ -821,7 +821,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-dino-rybnicka',
     name: 'Dino – ul. Rybnicka 37A',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Rybnicka 37A, 44-193 Knurów',
     tags: ['Szczygłowice', 'market', 'parking'],
     lat: 50.1995,
@@ -831,7 +831,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-dino-ulanow',
     name: 'Dino – ul. Ułanów 2',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Ułanów 2, 44-190 Knurów',
     tags: ['market', 'parking'],
     lat: 50.2282,
@@ -841,7 +841,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-mcdonalds-knurow',
     name: "McDonald's Knurów",
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. 1 Maja 76, 44-190 Knurów',
     tags: ['McDrive', 'fast-food', 'parking'],
     lat: 50.2281,
@@ -851,7 +851,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-rossmann-1maja',
     name: 'Rossmann – ul. 1 Maja 74',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. 1 Maja 74, 44-190 Knurów',
     tags: ['drogeria', 'kosmetyki', 'centrum'],
     lat: 50.2278,
@@ -861,7 +861,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-rossmann-szpitalna',
     name: 'Rossmann – ul. Szpitalna 37',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Szpitalna 37, 44-196 Knurów',
     tags: ['drogeria', 'parking'],
     lat: 50.2158,
@@ -871,7 +871,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-pepco-1maja',
     name: 'Pepco – ul. 1 Maja 74',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. 1 Maja 74, 44-190 Knurów',
     tags: ['odzież', 'dom i dekoracje'],
     lat: 50.2279,
@@ -881,7 +881,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-pepco-szpitalna',
     name: 'Pepco – ul. Szpitalna 37',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Szpitalna 37, 44-196 Knurów',
     tags: ['odzież', 'dom', 'parking'],
     lat: 50.2159,
@@ -987,6 +987,16 @@ export const SEED_PLACES: Place[] = [
     lat: 50.2258,
     lng: 18.6745,
     createdAt: '2026-03-19T13:55:00Z',
+  },
+  {
+    id: 'place-gym-city-knurow',
+    name: 'Gym City Knurów',
+    category: 'silownie',
+    address: 'ul. 1 Maja 74, 44-190 Knurów',
+    tags: ['siłownia', 'fitness', 'centrum'],
+    lat: 50.2278,
+    lng: 18.6764,
+    createdAt: '2026-03-19T13:58:00Z',
   },
   {
     id: 'place-orlik-mosir',
@@ -1100,10 +1110,10 @@ export const SEED_PLACES: Place[] = [
   },
   {
     id: 'place-pub-777',
-    name: 'Pub 777 (Restauracja i Pub)',
-    category: 'inne',
+    name: 'Pub 777 (Pizzeria i Pub)',
+    category: 'pizzeria',
     address: 'ul. 1 Maja 25, 44-190 Knurów',
-    tags: ['restauracja', 'pub', 'kuchnia polska'],
+    tags: ['pizza', 'pub', 'kuchnia polska'],
     lat: 50.2244,
     lng: 18.6729,
     createdAt: '2026-03-20T10:00:00Z',
@@ -1111,7 +1121,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-przystanek-burger',
     name: 'Przystanek Burger',
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. Szpitalna 19, 44-190 Knurów',
     tags: ['burgery', 'street food', 'centrum'],
     lat: 50.2192,
@@ -1121,7 +1131,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-pracownia-smaku-orso',
     name: 'Pracownia Smaku Orso',
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. Kapelanów Wojskowych 15A, 44-194 Knurów',
     tags: ['restauracja', 'steki i kuchnia polska', 'imprezy'],
     lat: 50.2193,
@@ -1131,7 +1141,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-bistro-korzenie-slaska',
     name: 'Bistro Korzenie Śląska',
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. 1 Maja 57, 44-190 Knurów',
     tags: ['bistro', 'kuchnia śląska', 'obiady'],
     lat: 50.2263,
@@ -1141,7 +1151,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-quoc-cuong',
     name: 'Bar Orientalny Quoc-Cuong',
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. Kosmonautów 13B, 44-194 Knurów',
     tags: ['kuchnia wietnamska', 'duże porcje', 'na wynos'],
     lat: 50.2186,
@@ -1151,7 +1161,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-zielony-ogrod',
     name: 'Restauracja Zielony Ogród',
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. Plebiscytowa 25, 44-190 Knurów',
     tags: ['kuchnia polska', 'obiady', 'ogródek'],
     lat: 50.2227,
@@ -1161,7 +1171,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-frytkarz-knurow',
     name: 'Frytkarz Knurów',
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. Jana Kilińskiego 1C, 44-193 Knurów',
     tags: ['Szczygłowice', 'frytki belgijskie', 'fast-food'],
     lat: 50.1976,
@@ -1171,7 +1181,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-ice-pub-szczyglowice',
     name: 'Ice Pub Szczygłowice',
-    category: 'inne',
+    category: 'restauracje',
     address: 'ul. Hugona Kołłątaja 2, 44-193 Knurów',
     tags: ['Szczygłowice', 'pub', 'imprezy'],
     lat: 50.1965,
@@ -1181,7 +1191,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-ferlo-bake-sweet',
     name: 'Ferlo Bake and Sweet',
-    category: 'inne',
+    category: 'kawiarnie',
     address: 'ul. Kosmonautów 23B, 44-194 Knurów',
     tags: ['cukiernia', 'kawiarnia', 'lody'],
     lat: 50.218,
@@ -1191,7 +1201,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-lova-lody',
     name: 'LOVA (Lody Rzemieślnicze, Gofry, Kawa)',
-    category: 'inne',
+    category: 'kawiarnie',
     address: 'ul. Kapelanów Wojskowych 2C, 44-194 Knurów',
     tags: ['lody rzemieślnicze', 'gofry', 'kawa'],
     lat: 50.2192,
@@ -1201,7 +1211,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-cukiernia-u-sebusia',
     name: 'Cukiernia „U Sebusia”',
-    category: 'inne',
+    category: 'kawiarnie',
     address: 'ul. Kazimierza Wielkiego 20A, 44-194 Knurów',
     tags: ['cukiernia', 'ciasta', 'torty'],
     lat: 50.2185,
@@ -1211,7 +1221,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-piekarnia-u-zbyszka',
     name: 'Piekarnia i Cukiernia „U Zbyszka”',
-    category: 'inne',
+    category: 'kawiarnie',
     address: 'ul. 1 Maja 59, 44-190 Knurów',
     tags: ['piekarnia', 'cukiernia', 'lody'],
     lat: 50.2265,
@@ -1221,7 +1231,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-art-cafe-ck',
     name: 'Art Cafe (ART CK)',
-    category: 'inne',
+    category: 'kawiarnie',
     address: 'ul. Wincentego Witosa 6, 44-196 Knurów',
     tags: ['kawiarnia', 'kultura', 'centrum'],
     lat: 50.217,
@@ -1231,7 +1241,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-pracownia-cos-slodkiego',
     name: 'Pracownia Coś Słodkiego',
-    category: 'inne',
+    category: 'kawiarnie',
     address: 'ul. Armii Krajowej 1, 44-190 Knurów',
     tags: ['cukiernia', 'torty artystyczne', 'desery'],
     lat: 50.2243,
@@ -1241,7 +1251,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-slodki-domek',
     name: 'Słodki Domek',
-    category: 'inne',
+    category: 'kawiarnie',
     address: 'ul. Szpitalna 1, 44-190 Knurów',
     tags: ['lody rzemieślnicze', 'kawiarnia', 'centrum'],
     lat: 50.2225,
@@ -1251,7 +1261,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-stokrotka-jednosci',
     name: 'Stokrotka Market – ul. Jedności Narodowej 1A',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Jedności Narodowej 1A, 44-194 Knurów',
     tags: ['supermarket', 'zakupy', 'osiedle'],
     lat: 50.2197,
@@ -1261,7 +1271,7 @@ export const SEED_PLACES: Place[] = [
   {
     id: 'place-stokrotka-staszica',
     name: 'Stokrotka Supermarket – ul. Staszica 2',
-    category: 'inne',
+    category: 'markety',
     address: 'ul. Stanisława Staszica 2, 44-193 Knurów',
     tags: ['Szczygłowice', 'supermarket', 'zakupy'],
     lat: 50.1962,

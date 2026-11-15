@@ -34,13 +34,16 @@ type CategoryFilter = 'wszystkie' | PlaceCategory;
 const FILTER_ORDER: CategoryFilter[] = [
   'wszystkie',
   'kebab',
+  'pizzeria',
+  'restauracje',
+  'kawiarnie',
   'barber',
   'fryzjer',
   'zabka',
   'lidl',
   'biedronka',
+  'markety',
   'szkoly',
-  'pizzeria',
   'silownie',
   'boiska',
   'inne',
@@ -220,13 +223,16 @@ export default function App() {
     const counts: Record<CategoryFilter, number> = {
       wszystkie: places.length,
       kebab: 0,
+      pizzeria: 0,
+      restauracje: 0,
+      kawiarnie: 0,
       barber: 0,
       fryzjer: 0,
       zabka: 0,
       lidl: 0,
       biedronka: 0,
+      markety: 0,
       szkoly: 0,
-      pizzeria: 0,
       silownie: 0,
       boiska: 0,
       inne: 0,
@@ -271,7 +277,14 @@ export default function App() {
     places.length > 0 &&
     (places.length < 125 ||
       !places.some((p) => p.category === 'boiska') ||
-      !places.some((p) => p.name.toLowerCase().includes('axiniia')));
+      !places.some((p) => p.category === 'restauracje') ||
+      !places.some((p) => p.category === 'kawiarnie') ||
+      !places.some((p) => p.category === 'markety') ||
+      !places.some((p) => p.name.toLowerCase().includes('axiniia')) ||
+      !places.some((p) => p.name.toLowerCase().includes('gym city')) ||
+      !places.some(
+        (p) => p.name.toLowerCase().includes('pub 777') && p.category === 'pizzeria'
+      ));
 
   const showSqlTools = !isSupabaseConfigured || needsSqlMigration || isSetupQuery;
 
@@ -408,12 +421,18 @@ export default function App() {
                     <span className="font-mono font-semibold text-amber-300">
                       {places.length}
                     </span>{' '}
-                    miejsc. Dostępna jest aktualizacja katalogu (125+ lokali:
-                    nowe salony fryzjerskie, m.in.{' '}
+                    miejsc. Dostępna jest aktualizacja kategorii i katalogu
+                    (125+ lokali, osobne TOP 10:{' '}
                     <strong className="text-zinc-100">
-                      Salon Fryzjerski Axiniia
+                      Restauracje i Bistra
                     </strong>
-                    , barberzy, restauracje, kawiarnie, cukiernie i apteki).
+                    ,{' '}
+                    <strong className="text-zinc-100">
+                      Kawiarnie i Cukiernie
+                    </strong>
+                    ,{' '}
+                    <strong className="text-zinc-100">Markety i Sklepy</strong>{' '}
+                    oraz nowe salony fryzjerskie m.in. Axiniia).
                   </p>
                   <button
                     type="button"

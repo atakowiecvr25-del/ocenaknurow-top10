@@ -38,10 +38,11 @@ export function SqlSchemaPanel() {
               </strong>{' '}
               i wklej ją w Supabase →{' '}
               <span className="font-mono text-zinc-200">SQL Editor</span> →{' '}
-              <span className="font-mono text-zinc-200">Run</span>. Doda brakujące
-              salony fryzjerskie (m.in. Salon Fryzjerski Axiniia, Sońka, Gabriela,
-              Stylove Włosy), barberów, restauracje, kawiarnie, cukiernie oraz
-              apteki — bez usuwania istniejących opinii.
+              <span className="font-mono text-zinc-200">Run</span>. Utworzy
+              osobne kategorie TOP 10 (Restauracje i Bistra, Kawiarnie i
+              Cukiernie, Markety i Sklepy) oraz doda brakujące salony
+              fryzjerskie (m.in. Axiniia), barberów i lokale — bez usuwania
+              istniejących opinii.
             </p>
           </div>
 

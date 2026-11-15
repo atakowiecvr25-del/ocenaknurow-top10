@@ -5,8 +5,11 @@ export type PlaceCategory =
   | 'zabka'
   | 'lidl'
   | 'biedronka'
+  | 'markety'
   | 'szkoly'
   | 'pizzeria'
+  | 'restauracje'
+  | 'kawiarnie'
   | 'silownie'
   | 'boiska'
   | 'inne';
@@ -82,13 +85,16 @@ export function resolveReviewAuthor(
 export const CATEGORY_LABELS: Record<PlaceCategory | 'wszystkie', string> = {
   wszystkie: 'Wszystkie',
   kebab: 'Kebab',
+  pizzeria: 'Pizzerie',
+  restauracje: 'Restauracje i Bistra',
+  kawiarnie: 'Kawiarnie i Cukiernie',
   barber: 'Barbershop',
   fryzjer: 'Fryzjer',
   zabka: 'Żabka',
   lidl: 'Lidl',
   biedronka: 'Biedronka',
+  markety: 'Markety i Sklepy',
   szkoly: 'Szkoły',
-  pizzeria: 'Pizzerie',
   silownie: 'Siłownie',
   boiska: 'Boiska / Orliki',
   inne: 'Inne',
@@ -96,13 +102,16 @@ export const CATEGORY_LABELS: Record<PlaceCategory | 'wszystkie', string> = {
 
 export const VALID_CATEGORIES: PlaceCategory[] = [
   'kebab',
+  'pizzeria',
+  'restauracje',
+  'kawiarnie',
   'barber',
   'fryzjer',
   'zabka',
   'lidl',
   'biedronka',
+  'markety',
   'szkoly',
-  'pizzeria',
   'silownie',
   'boiska',
   'inne',
@@ -122,14 +131,55 @@ export function normalizePlaceCategory(
   if (lower.includes('żabka') || lower.includes('zabka')) return 'zabka';
   if (lower.includes('lidl')) return 'lidl';
   if (lower.includes('biedronka')) return 'biedronka';
+  if (
+    lower.includes('dino') ||
+    lower.includes('kaufland') ||
+    lower.includes('aldi') ||
+    lower.includes('netto') ||
+    lower.includes('stokrotka') ||
+    lower.includes('rossmann') ||
+    lower.includes('pepco')
+  ) {
+    return 'markety';
+  }
   if (lower.includes('fryzjer')) return 'fryzjer';
   if (lower.includes('barber')) return 'barber';
   if (lower.includes('kebab')) return 'kebab';
-  if (lower.includes('pizz')) return 'pizzeria';
+  if (lower.includes('pizz') || lower.includes('pub 777')) return 'pizzeria';
+  if (
+    lower.includes('cukiern') ||
+    lower.includes('piekarn') ||
+    lower.includes('kawiarn') ||
+    lower.includes('cafe') ||
+    lower.includes('ferlo') ||
+    lower.includes('lova') ||
+    lower.includes('sebusia') ||
+    lower.includes('zbyszka') ||
+    lower.includes('coś słodkiego') ||
+    lower.includes('cos slodkiego') ||
+    lower.includes('słodki domek') ||
+    lower.includes('slodki domek')
+  ) {
+    return 'kawiarnie';
+  }
+  if (
+    lower.includes('restaurac') ||
+    lower.includes('bistro') ||
+    lower.includes('quoc-cuong') ||
+    lower.includes('frytkarz') ||
+    lower.includes('burger') ||
+    lower.includes('orso') ||
+    lower.includes('pub') ||
+    lower.includes('mcdonald')
+  ) {
+    return 'restauracje';
+  }
   if (
     lower.includes('siłownia') ||
     lower.includes('silownia') ||
     lower.includes('fitness') ||
+    lower.includes('gym city') ||
+    lower.includes('gmcity') ||
     lower.includes('health lab') ||
     lower.includes('one step') ||
     lower.includes('spartan') ||

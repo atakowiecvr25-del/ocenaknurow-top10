@@ -6,10 +6,11 @@ import type { RankedPlace } from '../types';
 
 const QUICK_PROMPTS = [
   'Kebaby w Knurowie',
+  'Restauracje i bistra',
+  'Kawiarnie i cukiernie',
   'Barber i fryzjer',
-  'Żabka, Lidl, Biedronka',
+  'Dino, Kaufland, ALDI',
   'Pizzerie w Knurowie',
-  'Szkoły w Knurowie',
   'Siłownie w Knurowie',
   'Boiska i Orliki',
   'Szczygłowice',

@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Migracja kategorii dla istniejącej bazy Supabase (OcenaKnurów – TOP 10)
 -- Wklej i kliknij RUN w Supabase -> SQL Editor, aby zaktualizować kategorie:
--- Barbershop / Fryzjer / Żabka / Lidl / Biedronka / Kebab / Szkoły / Pizzerie / Siłownie / Boiska / Orliki / Inne
+-- Barbershop / Fryzjer / Żabka / Lidl / Biedronka / Markety / Kebab / Pizzerie / Restauracje / Kawiarnie / Szkoły / Siłownie / Boiska / Inne
 -- ============================================================================
 
 -- 1. Usuń stary warunek CHECK na kolumnie category (zanim zaktualizujemy stare wiersze)
@@ -38,6 +38,8 @@ WHERE category IN ('inne', 'sklepy')
     OR name ILIKE '%health lab%'
     OR name ILIKE '%one step%'
     OR name ILIKE '%uniwersytet siły%'
+    OR name ILIKE '%gym city%'
+    OR name ILIKE '%gmcity%'
   );
 UPDATE public.places
 SET category = 'boiska'
@@ -48,12 +50,63 @@ WHERE category IN ('inne', 'sklepy')
     OR name ILIKE '%stadion%'
     OR name ILIKE '%kort%'
   );
-UPDATE public.places SET category = 'inne' WHERE category NOT IN ('kebab', 'barber', 'fryzjer', 'zabka', 'lidl', 'biedronka', 'szkoly', 'pizzeria', 'silownie', 'boiska', 'inne');
+UPDATE public.places
+SET category = 'pizzeria',
+    name = 'Pub 777 (Pizzeria i Pub)',
+    tags = ARRAY['pizza', 'pub', 'kuchnia polska']
+WHERE name ILIKE '%pub 777%'
+  AND NOT EXISTS (
+    SELECT 1 FROM public.places p2
+    WHERE lower(p2.name) = lower('Pub 777 (Pizzeria i Pub)') AND p2.id <> public.places.id
+  );
+UPDATE public.places
+SET category = 'pizzeria'
+WHERE name ILIKE '%pub 777%';
+UPDATE public.places
+SET category = 'restauracje'
+WHERE category IN ('inne', 'sklepy')
+  AND (
+    name ILIKE '%quoc-cuong%'
+    OR name ILIKE '%korzenie śląska%'
+    OR name ILIKE '%frytkarz%'
+    OR name ILIKE '%przystanek burger%'
+    OR name ILIKE '%orso%'
+    OR name ILIKE '%zielony ogród%'
+    OR name ILIKE '%ice pub%'
+    OR name ILIKE '%mcdonald%'
+  );
+UPDATE public.places
+SET category = 'kawiarnie'
+WHERE category IN ('inne', 'sklepy')
+  AND (
+    name ILIKE '%ferlo%'
+    OR name ILIKE '%lova%'
+    OR name ILIKE '%sebusia%'
+    OR name ILIKE '%zbyszka%'
+    OR name ILIKE '%art cafe%'
+    OR name ILIKE '%coś słodkiego%'
+    OR name ILIKE '%cos slodkiego%'
+    OR name ILIKE '%słodki domek%'
+    OR name ILIKE '%slodki domek%'
+  );
+UPDATE public.places
+SET category = 'markety'
+WHERE category IN ('inne', 'sklepy')
+  AND (
+    name ILIKE '%dino%'
+    OR name ILIKE '%kaufland%'
+    OR name ILIKE '%aldi%'
+    OR name ILIKE '%netto%'
+    OR name ILIKE '%stokrotka%'
+    OR name ILIKE '%rossmann%'
+    OR name ILIKE '%pepco%'
+  );
+UPDATE public.places SET category = 'inne' WHERE category NOT IN ('kebab', 'barber', 'fryzjer', 'zabka', 'lidl', 'biedronka', 'markety', 'szkoly', 'pizzeria', 'restauracje', 'kawiarnie', 'silownie', 'boiska', 'inne');
 
 -- 3. Teraz bezpiecznie dodaj nowe ograniczenie CHECK
 ALTER TABLE public.places
   ADD CONSTRAINT places_category_check
-  CHECK (category IN ('kebab', 'barber', 'fryzjer', 'zabka', 'lidl', 'biedronka', 'szkoly', 'pizzeria', 'silownie', 'boiska', 'inne'));
+  CHECK (category IN ('kebab', 'barber', 'fryzjer', 'zabka', 'lidl', 'biedronka', 'markety', 'szkoly', 'pizzeria', 'restauracje', 'kawiarnie', 'silownie', 'boiska', 'inne'));
 
 -- 4. Popraw widok Bayesa dla lokali z 0 recenzji (LEFT JOIN NULL fix)
 CREATE OR REPLACE VIEW public.places_with_bayes_ranking AS
@@ -202,17 +255,17 @@ FROM (
     ('Kryta Pływalnia aQuaRelax', 'inne', 'ul. Szpitalna 23, 44-190 Knurów', ARRAY['basen', 'sauna', 'zjeżdżalnia'], 50.2183, 18.6648),
     ('Kąpielisko Leśne Zacisze (MOSiR)', 'inne', 'ul. Niepodległości 109, 44-190 Knurów', ARRAY['kąpielisko letnie', 'rekreacja', 'siatkówka'], 50.2118, 18.6589),
     ('Hala Sportowa MOSiR Szczygłowice', 'inne', 'al. Lipowa 12A, 44-193 Knurów', ARRAY['sport', 'siłownia', 'Szczygłowice'], 50.1948, 18.6386),
-    ('Kaufland Knurów', 'inne', 'ul. 1 Maja 70, 44-190 Knurów', ARRAY['hipermarket', 'duży parking', 'apteka'], 50.2273, 18.6761),
-    ('ALDI Knurów', 'inne', 'ul. 1 Maja 49, 44-190 Knurów', ARRAY['market', 'parking', 'piekarnia'], 50.2256, 18.6744),
-    ('Netto Knurów', 'inne', 'ul. Mieszka I 6, 44-190 Knurów', ARRAY['dyskont', 'parking', 'zakupy'], 50.2249, 18.6654),
-    ('Dino – ul. Niepodległości 42', 'inne', 'ul. Niepodległości 42, 44-190 Knurów', ARRAY['market', 'stoisko mięsne', 'parking'], 50.2192, 18.6662),
-    ('Dino – ul. Rybnicka 37A', 'inne', 'ul. Rybnicka 37A, 44-193 Knurów', ARRAY['Szczygłowice', 'market', 'parking'], 50.1995, 18.6458),
-    ('Dino – ul. Ułanów 2', 'inne', 'ul. Ułanów 2, 44-190 Knurów', ARRAY['market', 'parking'], 50.2282, 18.6684),
-    ('McDonald''s Knurów', 'inne', 'ul. 1 Maja 76, 44-190 Knurów', ARRAY['McDrive', 'fast-food', 'parking'], 50.2281, 18.6768),
-    ('Rossmann – ul. 1 Maja 74', 'inne', 'ul. 1 Maja 74, 44-190 Knurów', ARRAY['drogeria', 'kosmetyki', 'centrum'], 50.2278, 18.6764),
-    ('Rossmann – ul. Szpitalna 37', 'inne', 'ul. Szpitalna 37, 44-196 Knurów', ARRAY['drogeria', 'parking'], 50.2158, 18.6613),
-    ('Pepco – ul. 1 Maja 74', 'inne', 'ul. 1 Maja 74, 44-190 Knurów', ARRAY['odzież', 'dom i dekoracje'], 50.2279, 18.6765),
-    ('Pepco – ul. Szpitalna 37', 'inne', 'ul. Szpitalna 37, 44-196 Knurów', ARRAY['odzież', 'dom', 'parking'], 50.2159, 18.6615),
+    ('Kaufland Knurów', 'markety', 'ul. 1 Maja 70, 44-190 Knurów', ARRAY['hipermarket', 'duży parking', 'apteka'], 50.2273, 18.6761),
+    ('ALDI Knurów', 'markety', 'ul. 1 Maja 49, 44-190 Knurów', ARRAY['market', 'parking', 'piekarnia'], 50.2256, 18.6744),
+    ('Netto Knurów', 'markety', 'ul. Mieszka I 6, 44-190 Knurów', ARRAY['dyskont', 'parking', 'zakupy'], 50.2249, 18.6654),
+    ('Dino – ul. Niepodległości 42', 'markety', 'ul. Niepodległości 42, 44-190 Knurów', ARRAY['market', 'stoisko mięsne', 'parking'], 50.2192, 18.6662),
+    ('Dino – ul. Rybnicka 37A', 'markety', 'ul. Rybnicka 37A, 44-193 Knurów', ARRAY['Szczygłowice', 'market', 'parking'], 50.1995, 18.6458),
+    ('Dino – ul. Ułanów 2', 'markety', 'ul. Ułanów 2, 44-190 Knurów', ARRAY['market', 'parking'], 50.2282, 18.6684),
+    ('McDonald''s Knurów', 'restauracje', 'ul. 1 Maja 76, 44-190 Knurów', ARRAY['McDrive', 'fast-food', 'parking'], 50.2281, 18.6768),
+    ('Rossmann – ul. 1 Maja 74', 'markety', 'ul. 1 Maja 74, 44-190 Knurów', ARRAY['drogeria', 'kosmetyki', 'centrum'], 50.2278, 18.6764),
+    ('Rossmann – ul. Szpitalna 37', 'markety', 'ul. Szpitalna 37, 44-196 Knurów', ARRAY['drogeria', 'parking'], 50.2158, 18.6613),
+    ('Pepco – ul. 1 Maja 74', 'markety', 'ul. 1 Maja 74, 44-190 Knurów', ARRAY['odzież', 'dom i dekoracje'], 50.2279, 18.6765),
+    ('Pepco – ul. Szpitalna 37', 'markety', 'ul. Szpitalna 37, 44-196 Knurów', ARRAY['odzież', 'dom', 'parking'], 50.2159, 18.6615),
     ('Kino Scena Kultura', 'inne', 'ul. Niepodległości 26, 44-190 Knurów', ARRAY['kino', 'koncerty', 'Centrum Kultury'], 50.2203, 18.6678),
     ('Dom Kultury Knurów-Szczygłowice', 'inne', 'ul. Górnicza 1, 44-193 Knurów', ARRAY['Szczygłowice', 'wydarzenia', 'kultura'], 50.1984, 18.6422),
     ('Xtreme Fitness Knurów', 'silownie', 'ul. Szpitalna 37, 44-194 Knurów', ARRAY['siłownia', 'fitness', 'parking'], 50.2157, 18.6614),
@@ -223,6 +276,7 @@ FROM (
     ('One Step Active Studio', 'silownie', 'ul. Wincentego Witosa 29, 44-196 Knurów', ARRAY['studio fitness', 'trening motoryczny'], 50.2160, 18.6600),
     ('Uniwersytet Siły (Studio Fitness)', 'silownie', 'ul. 1 Maja 51A, 44-190 Knurów', ARRAY['siłownia', 'fitness', 'trening siłowy'], 50.2259, 18.6746),
     ('Klub Fitness NJN – ul. 1 Maja', 'silownie', 'ul. 1 Maja 51, 44-190 Knurów', ARRAY['siłownia', 'fitness', 'centrum'], 50.2258, 18.6745),
+    ('Gym City Knurów', 'silownie', 'ul. 1 Maja 74, 44-190 Knurów', ARRAY['siłownia', 'fitness', 'centrum'], 50.2278, 18.6764),
 
     ('Orlik MOSiR Knurów (ul. Ułanów / al. Lipowa)', 'boiska', 'ul. Ułanów 8, 44-194 Knurów', ARRAY['Orlik', 'MOSiR', 'sztuczna trawa', 'oświetlenie'], 50.2286, 18.6672),
     ('Boisko „Siódemka” (MSP nr 7)', 'boiska', 'ul. Jedności Narodowej 5, 44-194 Knurów', ARRAY['Siódemka', 'boisko wielofunkcyjne', 'piłka nożna', 'koszykówka'], 50.2195, 18.6596),
@@ -236,23 +290,23 @@ FROM (
 
     ('Szpital w Knurowie', 'inne', 'ul. Niepodległości 8, 44-190 Knurów', ARRAY['szpital', 'izba przyjęć', 'opieka medyczna'], 50.2215, 18.6698),
     ('Urząd Miasta Knurów', 'inne', 'ul. dr. Floriana Ogana 5, 44-190 Knurów', ARRAY['urząd miasta', 'sprawy obywatelskie', 'centrum'], 50.2229, 18.6719),
-    ('Pub 777 (Restauracja i Pub)', 'inne', 'ul. 1 Maja 25, 44-190 Knurów', ARRAY['restauracja', 'pub', 'kuchnia polska'], 50.2244, 18.6729),
-    ('Przystanek Burger', 'inne', 'ul. Szpitalna 19, 44-190 Knurów', ARRAY['burgery', 'street food', 'centrum'], 50.2192, 18.6656),
-    ('Pracownia Smaku Orso', 'inne', 'ul. Kapelanów Wojskowych 15A, 44-194 Knurów', ARRAY['restauracja', 'steki i kuchnia polska', 'imprezy'], 50.2193, 18.6624),
-    ('Bistro Korzenie Śląska', 'inne', 'ul. 1 Maja 57, 44-190 Knurów', ARRAY['bistro', 'kuchnia śląska', 'obiady'], 50.2263, 18.6750),
-    ('Bar Orientalny Quoc-Cuong', 'inne', 'ul. Kosmonautów 13B, 44-194 Knurów', ARRAY['kuchnia wietnamska', 'duże porcje', 'na wynos'], 50.2186, 18.6629),
-    ('Restauracja Zielony Ogród', 'inne', 'ul. Plebiscytowa 25, 44-190 Knurów', ARRAY['kuchnia polska', 'obiady', 'ogródek'], 50.2227, 18.6805),
-    ('Frytkarz Knurów', 'inne', 'ul. Jana Kilińskiego 1C, 44-193 Knurów', ARRAY['Szczygłowice', 'frytki belgijskie', 'fast-food'], 50.1976, 18.6435),
-    ('Ice Pub Szczygłowice', 'inne', 'ul. Hugona Kołłątaja 2, 44-193 Knurów', ARRAY['Szczygłowice', 'pub', 'imprezy'], 50.1965, 18.6406),
-    ('Ferlo Bake and Sweet', 'inne', 'ul. Kosmonautów 23B, 44-194 Knurów', ARRAY['cukiernia', 'kawiarnia', 'lody'], 50.2180, 18.6628),
-    ('LOVA (Lody Rzemieślnicze, Gofry, Kawa)', 'inne', 'ul. Kapelanów Wojskowych 2C, 44-194 Knurów', ARRAY['lody rzemieślnicze', 'gofry', 'kawa'], 50.2192, 18.6620),
-    ('Cukiernia „U Sebusia”', 'inne', 'ul. Kazimierza Wielkiego 20A, 44-194 Knurów', ARRAY['cukiernia', 'ciasta', 'torty'], 50.2185, 18.6612),
-    ('Piekarnia i Cukiernia „U Zbyszka”', 'inne', 'ul. 1 Maja 59, 44-190 Knurów', ARRAY['piekarnia', 'cukiernia', 'lody'], 50.2265, 18.6752),
-    ('Art Cafe (ART CK)', 'inne', 'ul. Wincentego Witosa 6, 44-196 Knurów', ARRAY['kawiarnia', 'kultura', 'centrum'], 50.2170, 18.6587),
-    ('Pracownia Coś Słodkiego', 'inne', 'ul. Armii Krajowej 1, 44-190 Knurów', ARRAY['cukiernia', 'torty artystyczne', 'desery'], 50.2243, 18.6716),
-    ('Słodki Domek', 'inne', 'ul. Szpitalna 1, 44-190 Knurów', ARRAY['lody rzemieślnicze', 'kawiarnia', 'centrum'], 50.2225, 18.6703),
-    ('Stokrotka Market – ul. Jedności Narodowej 1A', 'inne', 'ul. Jedności Narodowej 1A, 44-194 Knurów', ARRAY['supermarket', 'zakupy', 'osiedle'], 50.2197, 18.6598),
-    ('Stokrotka Supermarket – ul. Staszica 2', 'inne', 'ul. Stanisława Staszica 2, 44-193 Knurów', ARRAY['Szczygłowice', 'supermarket', 'zakupy'], 50.1962, 18.6395),
+    ('Pub 777 (Pizzeria i Pub)', 'pizzeria', 'ul. 1 Maja 25, 44-190 Knurów', ARRAY['pizza', 'pub', 'kuchnia polska'], 50.2244, 18.6729),
+    ('Przystanek Burger', 'restauracje', 'ul. Szpitalna 19, 44-190 Knurów', ARRAY['burgery', 'street food', 'centrum'], 50.2192, 18.6656),
+    ('Pracownia Smaku Orso', 'restauracje', 'ul. Kapelanów Wojskowych 15A, 44-194 Knurów', ARRAY['restauracja', 'steki i kuchnia polska', 'imprezy'], 50.2193, 18.6624),
+    ('Bistro Korzenie Śląska', 'restauracje', 'ul. 1 Maja 57, 44-190 Knurów', ARRAY['bistro', 'kuchnia śląska', 'obiady'], 50.2263, 18.6750),
+    ('Bar Orientalny Quoc-Cuong', 'restauracje', 'ul. Kosmonautów 13B, 44-194 Knurów', ARRAY['kuchnia wietnamska', 'duże porcje', 'na wynos'], 50.2186, 18.6629),
+    ('Restauracja Zielony Ogród', 'restauracje', 'ul. Plebiscytowa 25, 44-190 Knurów', ARRAY['kuchnia polska', 'obiady', 'ogródek'], 50.2227, 18.6805),
+    ('Frytkarz Knurów', 'restauracje', 'ul. Jana Kilińskiego 1C, 44-193 Knurów', ARRAY['Szczygłowice', 'frytki belgijskie', 'fast-food'], 50.1976, 18.6435),
+    ('Ice Pub Szczygłowice', 'restauracje', 'ul. Hugona Kołłątaja 2, 44-193 Knurów', ARRAY['Szczygłowice', 'pub', 'imprezy'], 50.1965, 18.6406),
+    ('Ferlo Bake and Sweet', 'kawiarnie', 'ul. Kosmonautów 23B, 44-194 Knurów', ARRAY['cukiernia', 'kawiarnia', 'lody'], 50.2180, 18.6628),
+    ('LOVA (Lody Rzemieślnicze, Gofry, Kawa)', 'kawiarnie', 'ul. Kapelanów Wojskowych 2C, 44-194 Knurów', ARRAY['lody rzemieślnicze', 'gofry', 'kawa'], 50.2192, 18.6620),
+    ('Cukiernia „U Sebusia”', 'kawiarnie', 'ul. Kazimierza Wielkiego 20A, 44-194 Knurów', ARRAY['cukiernia', 'ciasta', 'torty'], 50.2185, 18.6612),
+    ('Piekarnia i Cukiernia „U Zbyszka”', 'kawiarnie', 'ul. 1 Maja 59, 44-190 Knurów', ARRAY['piekarnia', 'cukiernia', 'lody'], 50.2265, 18.6752),
+    ('Art Cafe (ART CK)', 'kawiarnie', 'ul. Wincentego Witosa 6, 44-196 Knurów', ARRAY['kawiarnia', 'kultura', 'centrum'], 50.2170, 18.6587),
+    ('Pracownia Coś Słodkiego', 'kawiarnie', 'ul. Armii Krajowej 1, 44-190 Knurów', ARRAY['cukiernia', 'torty artystyczne', 'desery'], 50.2243, 18.6716),
+    ('Słodki Domek', 'kawiarnie', 'ul. Szpitalna 1, 44-190 Knurów', ARRAY['lody rzemieślnicze', 'kawiarnia', 'centrum'], 50.2225, 18.6703),
+    ('Stokrotka Market – ul. Jedności Narodowej 1A', 'markety', 'ul. Jedności Narodowej 1A, 44-194 Knurów', ARRAY['supermarket', 'zakupy', 'osiedle'], 50.2197, 18.6598),
+    ('Stokrotka Supermarket – ul. Staszica 2', 'markety', 'ul. Stanisława Staszica 2, 44-193 Knurów', ARRAY['Szczygłowice', 'supermarket', 'zakupy'], 50.1962, 18.6395),
     ('Apteka Św. Barbary (całodobowa)', 'inne', 'ul. ks. Alojzego Koziełka 8, 44-190 Knurów', ARRAY['apteka', 'całodobowa', 'centrum'], 50.2224, 18.6718),
     ('Stacja Paliw BP Knurów', 'inne', 'ul. 1 Maja 55, 44-190 Knurów', ARRAY['stacja paliw', 'myjnia', 'kawa Wild Bean'], 50.2261, 18.6748),
     ('Stacja Paliw ORLEN Knurów', 'inne', 'ul. 1 Maja 9, 44-190 Knurów', ARRAY['stacja paliw', 'samoobsługowa', 'centrum'], 50.2231, 18.6716)
